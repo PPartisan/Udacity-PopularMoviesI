@@ -1,6 +1,7 @@
 package com.github.ppartisan.popularmoviesi;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -32,11 +33,18 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
     private MovieGridAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
-    //Stores list position during config changes
-    private int listPosition = 0;
-
     //Could save this value to SharedPreferences for persistence beyond app's scope. Future idea?
     private String sortPreference = FetchJsonMovieDataUtils.SORT_BY_POPULARITY;
+
+    public static MainFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        MainFragment fragment = new MainFragment();
+        fragment.setArguments(args);
+        return fragment;
+
+    }
 
     @Nullable
     @Override
@@ -60,7 +68,6 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
             sortPreference = savedInstanceState.getString(
                     SORT_PREFERENCE_KEY, FetchJsonMovieDataUtils.SORT_BY_POPULARITY
             );
-            listPosition = savedInstanceState.getInt(RECYCLER_VIEW_POSITION_KEY,0);
         }
 
         return root;
@@ -74,17 +81,20 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        restoreRecyclerViewState();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveRecyclerViewState();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        final int firstVisibleItem =
-                ((GridLayoutManager)mRecyclerView.getLayoutManager())
-                        .findFirstCompletelyVisibleItemPosition();
-
-        outState.putInt(RECYCLER_VIEW_POSITION_KEY,
-                (firstVisibleItem < 0) ? listPosition : firstVisibleItem
-        );
-
         outState.putString(SORT_PREFERENCE_KEY, sortPreference);
     }
 
@@ -109,9 +119,7 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
         try {
             List<MovieModel> movieModels = parser.getMovieModelsFromJson(movieDataJson);
             mAdapter.setMovieModels(movieModels);
-            if (listPosition != 0 ) {
-                mRecyclerView.getLayoutManager().scrollToPosition(listPosition);
-            }
+            restoreRecyclerViewState();
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
@@ -136,6 +144,17 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
             );
             task.execute(sortCode);
         }
+    }
+
+    private void restoreRecyclerViewState() {
+        Parcelable parcelable = getArguments().getParcelable(RECYCLER_VIEW_POSITION_KEY);
+        mRecyclerView.getLayoutManager().onRestoreInstanceState(parcelable);
+    }
+
+    private void saveRecyclerViewState() {
+        getArguments().putParcelable(
+                RECYCLER_VIEW_POSITION_KEY, mRecyclerView.getLayoutManager().onSaveInstanceState()
+        );
     }
 
 }

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Popular Movies I</string>
+
+    <!-- Grid Items -->
+    <string name="grid_item_thumbnails_content_desc">Grid Item Thumbnail</string>
+
+    <!-- Main Menu -->
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_by_popularity">Sort By: Popularity</string>
+    <string name="action_sort_by_average_votes">Sort By: Average Vote</string>
+
+    <!-- Detail Fragment -->
+    <string name="df_thumbnail_content_desc">Movie Poster Image</string>
+    <string name="df_synopsis_title">Synopsis</string>
+    <string name="df_rating_title">Rating</string>
+    <string name="df_rating_content">%1$s out of 10</string>
+    <string name="df_release_date_title">Release Date</string>
+
+
+</resources>

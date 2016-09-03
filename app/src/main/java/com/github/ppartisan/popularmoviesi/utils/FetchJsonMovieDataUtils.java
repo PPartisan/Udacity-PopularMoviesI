@@ -12,17 +12,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//@SuppressWarnings("unused")
 public final class FetchJsonMovieDataUtils {
 
-    private static final String MOVIE_REQUEST_BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
-    private static final String SORT_BY_PARAM = "sort_by";
+    private static final String MOVIE_REQUEST_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static final String API_KEY_PARAM = "api_key";
 
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
 
-    public static final String SORT_BY_VOTE = "vote_average.desc";
-    public static final String SORT_BY_POPULARITY = "popularity.desc";
+    public static final String SORT_BY_VOTE = "top_rated";
+    public static final String SORT_BY_POPULARITY = "popular";
 
     public static final String IMAGE_WIDTH = "w500";
 
@@ -30,7 +28,7 @@ public final class FetchJsonMovieDataUtils {
 
     public static String getMovieDatabaseRequestString(String sortCriteria) {
         return Uri.parse(MOVIE_REQUEST_BASE_URL).buildUpon()
-                .appendQueryParameter(SORT_BY_PARAM, sortCriteria)
+                .appendPath(sortCriteria)
                 .appendQueryParameter(API_KEY_PARAM, ApiKey.KEY).build().toString();
     }
 

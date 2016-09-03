@@ -7,7 +7,7 @@
     <!-- Main Menu -->
     <string name="action_sort">Sort</string>
     <string name="action_sort_by_popularity">Sort By: Popularity</string>
-    <string name="action_sort_by_average_votes">Sort By: Average Vote</string>
+    <string name="action_sort_by_average_votes">Sort By: Highest Rated</string>
 
     <!-- Detail Fragment -->
     <string name="df_thumbnail_content_desc">Movie Poster Image</string>

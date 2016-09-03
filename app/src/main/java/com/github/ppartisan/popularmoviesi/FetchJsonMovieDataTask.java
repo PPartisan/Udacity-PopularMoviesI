@@ -28,13 +28,16 @@ public class FetchJsonMovieDataTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String jsonResultsString) {
-        if (listener.get() != null) {
+        if (listener.get() != null && jsonResultsString == null) {
+            listener.get().onJsonMovieDataRetrievalError();
+        } else if (listener.get() != null && jsonResultsString != null) {
             listener.get().onJsonMovieDataReady(jsonResultsString);
         }
     }
 
     interface OnJsonMovieDataReadyListener {
         void onJsonMovieDataReady(String movieDataJson);
+        void onJsonMovieDataRetrievalError();
     }
 
 }

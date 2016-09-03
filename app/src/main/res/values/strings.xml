@@ -16,5 +16,8 @@
     <string name="df_rating_content">%1$s out of 10</string>
     <string name="df_release_date_title">Release Date</string>
 
+    <!-- Error Dialog -->
+    <string name="alert_no_connection_content">Connect to the internet for more results</string>
+    <string name="alert_dismiss">Dismiss</string>
 
 </resources>

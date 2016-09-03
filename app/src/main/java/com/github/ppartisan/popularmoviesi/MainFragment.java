@@ -3,6 +3,7 @@ package com.github.ppartisan.popularmoviesi;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -116,6 +117,15 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
         } finally {
             task = null;
         }
+    }
+
+    @Override
+    public void onJsonMovieDataRetrievalError() {
+        new AlertDialog.Builder(getContext(), R.style.AppDialogTheme)
+                .setMessage(getString(R.string.alert_no_connection_content))
+                .setNegativeButton(getString(R.string.alert_dismiss), null)
+                .show();
+        task = null;
     }
 
     private void launchFetchMovieDataTask(String sortCode) {

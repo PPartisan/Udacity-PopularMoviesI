@@ -4,11 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
+
 import android.view.View;
 
 import com.github.ppartisan.popularmoviesi.R;
@@ -68,8 +67,6 @@ public class RatingsView extends View {
         final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         final int height = resolveSize(widthSize/20, heightMeasureSpec);
 
-        Log.d(getClass().getSimpleName(), "onMeasure: Width = " + widthSize + ", height = " + height);
-
         setMeasuredDimension(widthSize, height);
     }
 
@@ -77,11 +74,6 @@ public class RatingsView extends View {
     protected void onDraw(Canvas canvas) {
 
         canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), mOutlinePaint);
-
-        Log.d(getClass().getSimpleName(), "Left: " + getLeft()  +", Right: " + getRight() + ", Top: " + getTop() + ", Bottom: " + getBottom());
-        Log.d(getClass().getSimpleName(), "getWidth(): " + getWidth()  +", getHeight(): " + getHeight());
-        Log.d(getClass().getSimpleName(), "getMeasuredWidth(): " + getMeasuredWidth()  +", getMeasuredHeight(): " + getMeasuredHeight());
-
 
         final float barWidth = getMeasuredWidth()*(score/10);
         canvas.drawRect(0, 0, barWidth, getMeasuredHeight(), mFillPaint);

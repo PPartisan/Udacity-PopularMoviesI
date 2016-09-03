@@ -1,9 +1,7 @@
 package com.github.ppartisan.popularmoviesi.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
-import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 public final class MetricUtils {

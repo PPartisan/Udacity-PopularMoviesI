@@ -1,7 +1,5 @@
 package com.github.ppartisan.popularmoviesi;
 
-import android.util.Log;
-
 import com.github.ppartisan.popularmoviesi.utils.FetchJsonMovieDataUtils;
 
 import org.json.JSONArray;

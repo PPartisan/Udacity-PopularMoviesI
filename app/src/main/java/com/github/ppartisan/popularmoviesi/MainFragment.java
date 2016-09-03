@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +23,16 @@ import java.util.List;
 public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJsonMovieDataReadyListener {
 
     private static final String SORT_PREFERENCE_KEY = "sort_pref_key";
+    private static final String RECYCLER_VIEW_POSITION_KEY = "rv_position_key";
 
     private FetchJsonMovieDataTask task = null;
     private JsonMovieDatabaseParser parser;
 
     private MovieGridAdapter mAdapter;
+    private RecyclerView mRecyclerView;
+
+    //Stores list position during config changes
+    private int listPosition = 0;
 
     //Could save this value to SharedPreferences for persistence beyond app's scope. Future idea?
     private String sortPreference = FetchJsonMovieDataUtils.SORT_BY_POPULARITY;
@@ -42,10 +48,10 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
         mAdapter = new MovieGridAdapter(null);
         final int columnCount = MetricUtils.getColumnCountForScreenWidth(getContext());
 
-        RecyclerView recyclerView = (RecyclerView) root.findViewById(R.id.fm_recycler);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.fm_recycler);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         parser = new JsonMovieDatabaseParser();
 
@@ -53,6 +59,7 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
             sortPreference = savedInstanceState.getString(
                     SORT_PREFERENCE_KEY, FetchJsonMovieDataUtils.SORT_BY_POPULARITY
             );
+            listPosition = savedInstanceState.getInt(RECYCLER_VIEW_POSITION_KEY,0);
         }
 
         return root;
@@ -68,6 +75,15 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        final int firstVisibleItem =
+                ((GridLayoutManager)mRecyclerView.getLayoutManager())
+                        .findFirstCompletelyVisibleItemPosition();
+
+        outState.putInt(RECYCLER_VIEW_POSITION_KEY,
+                (firstVisibleItem < 0) ? listPosition : firstVisibleItem
+        );
+
         outState.putString(SORT_PREFERENCE_KEY, sortPreference);
     }
 
@@ -92,6 +108,9 @@ public class MainFragment extends Fragment implements FetchJsonMovieDataTask.OnJ
         try {
             List<MovieModel> movieModels = parser.getMovieModelsFromJson(movieDataJson);
             mAdapter.setMovieModels(movieModels);
+            if (listPosition != 0 ) {
+                mRecyclerView.getLayoutManager().scrollToPosition(listPosition);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
